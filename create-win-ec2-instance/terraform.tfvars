@@ -4,8 +4,6 @@ ami_with_pf = "true"
 ami_id = "ami-0a7559a0ef82639f2"
 
 # IAM Access and Secret Key for your IAM user
-#aws_access_key = "AKIA2ZTNWZETRZUMCING"
-#aws_secret_key = "iHFBlpdOSlOfoJBBvSagbrhWqiQFhPISpjdcoN2b"
 aws_access_key = ""
 aws_secret_key = ""
 region = "us-east-1"
