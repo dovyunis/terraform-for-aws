@@ -1,0 +1,97 @@
+@Library(['shared-library@1.0.0']) _
+import groovy.json.*
+import jenkins.model.*
+import java.util.*
+import java.util.concurrent.TimeUnit
+
+// Define shared library
+//def pa_deployment = new org.PA.pa_shared_lib()
+
+pipeline
+{
+    agent { label 'terraform-machine' }
+
+    options
+    {
+        timestamps();
+        disableConcurrentBuilds();
+    }
+
+    environment {
+        settingIndex = "0"
+    }
+
+    parameters {
+    //    choice(choices: ['PA','CDR'], description: 'Product', name: 'Product')
+    //    string(defaultValue: "\\\\ptnas1-rnd\\builds\\PA\\PAoDB-Dev\\PAoDB-Dev\\21.10.4.1221\\Automation", description: 'Automation Build', name: 'AutomationBuild')
+        booleanParam(defaultValue: "false", description: 'destroy vm', name: 'destroy_vm')
+    }
+
+    stages
+    {
+
+
+        //stage('Load global environments') {
+        //    steps {
+        //        script {
+        //            pa_deployment.global_env()
+        //        }
+        //    }
+        //}
+
+
+        stage("create aws instance")
+        {
+            steps
+            {
+                script
+                {
+                    if ("${destroy_vm}" == 'true')
+                    {
+                    sh '''
+                    echo destroy machine
+                    /home/terraform/terraform init
+                    /home/terraform/terraform destroy -auto-approve
+                    '''
+                    }
+                    else
+                    {
+                    sh '''
+                    /home/terraform/terraform init
+                    /home/terraform/terraform plan -out .\\tf-pa.tfplan
+                    /home/terraform/terraform apply .\\tf-pa.tfplan
+                    '''
+                    }
+
+                }
+            }
+        }
+	}
+
+//post
+//{
+//    failure
+//    {
+//        script
+//        {
+//            env.BUILD_STATUS = currentBuild.getCurrentResult()
+//            emailext body: "Check console output at $BUILD_URL ",
+//                    to: "${EMAIL_TO}",
+//                    subject: "${BUILD_STATUS} - Build failed in Jenkins buile name: ${env.JOB_NAME} - build number: ${env.BUILD_NUMBER}"
+//        }
+//    }
+//
+//    success
+//    {
+//        script
+//        {
+//            env.BUILD_STATUS = currentBuild.getCurrentResult()
+//                emailext body: "Check console output at $BUILD_URL ",
+//                        to: "${EMAIL_TO}",
+//                        subject: "${BUILD_STATUS} - Build Success in Jenkins buile name: ${env.JOB_NAME} - build number: ${env.BUILD_NUMBER}"
+//        }
+//    }
+//
+//}
+
+}
