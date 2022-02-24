@@ -2,26 +2,26 @@ provider "aws" {
   region = "eu-west-2"
 }
 ##################################################################
-variable "vpcname" {
+variable "vpcname-string" {
   type = string
   default = "myvpc"
 }
 
-variable "sshport" {
+variable "sshport-number" {
   type = number
   default = 22
 }
 
-variable "enabled" {
+variable "enabled-boolean" {
   default = true
 }
 
-variable "mylist" {
+variable "mylist-list" {
   type = list(string) # string,number or boolean
   default = ["value1","value2"]
 }
 
-variable "mymap" {
+variable "mymap-map" {
   type = map
   default = {
     key1 = "value1"
@@ -30,9 +30,30 @@ variable "mymap" {
 }
 
 # input vars
-variable "inputname" {
+variable "inputname-input" {
   type = string
   description = "set the name of the vpc"
+}
+
+
+##################################################################
+#output vars
+output "vpcid-output" {
+  value = aws_vpc.myvpc1.id
+}
+
+##################################################################
+variable "mytuple-tuple" {
+  type = tuple([string, number, string])
+  default = ["cat", 1, "dog"]
+}
+
+variable "myobject-object" {
+  type = object({name = string, port = list(number)})
+  default = {
+    name = "DY"
+    port = [22,25,80]
+  }
 }
 
 ##################################################################
@@ -41,50 +62,32 @@ resource "aws_vpc" "myvpc1" {
   cidr_block = "10.0.0.0/16"
   # we define vpc name from the var that we created
   tags = {
-    Name = var.vpcname
+    Name = var.vpcname-string
   }
 }
 
-resource "aws_vpc" "myvpc2" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = var.mylist[0]
-  }
-}
+#resource "aws_vpc" "myvpc2" {
+#  cidr_block = "10.0.0.0/16"
+#  tags = {
+#    Name = var.mylist-list[0]
+#  }
+#}
+#
+#resource "aws_vpc" "myvpc3" {
+#  cidr_block = "10.0.0.0/16"
+#  tags       = {
+#    Name = var.mymap-map["key1"]
+#  }
+#}
+#
+#resource "aws_vpc" "myvpc4" {
+#  cidr_block = "10.0.0.0/16"
+#    tags = {
+#      Name = var.inputname-input
+#    }
+#}
 
-resource "aws_vpc" "myvpc3" {
-  cidr_block = "10.0.0.0/16"
-  tags       = {
-    Name = var.mymap["key1"]
-  }
-}
 
-resource "aws_vpc" "myvpc4" {
-  cidr_block = "10.0.0.0/16"
-    tags = {
-      Name = var.inputname
-    }
-}
-
-##################################################################
-#output vars
-output "vpcid" {
-  value = aws_vpc.myvpc1.id
-}
-
-##################################################################
-variable "mytuple" {
-  type = tuple([string, number, string])
-  default = ["cat", 1, "dog"]
-}
-
-variable "myobject" {
-  type = object({name = string, port = list(number)})
-  default = {
-    name = "DY"
-    port = [22,25,80]
-  }
-}
 
 
 
