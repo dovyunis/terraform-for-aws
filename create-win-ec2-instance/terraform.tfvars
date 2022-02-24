@@ -5,10 +5,8 @@ ami_id = "ami-02012212818f1fbf4"
 # user details:
 # terraform-pa
 # playground
-
-
-aws_access_key = ""
-aws_secret_key = "
+aws_access_key = "AKIA2ZTNWZETR5ZZRZPJ"
+aws_secret_key = "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"
 
 region = "eu-central-1"
 key_name = "phoenix"
